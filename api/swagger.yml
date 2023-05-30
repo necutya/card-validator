@@ -1,0 +1,101 @@
+openapi: "3.0.0"
+info:
+  description: "Card validator API"
+  version: "0.0.1"
+  title: "Card validator"
+
+paths:
+  /healthcheck:
+    get:
+      tags:
+        - "healthcheck"
+      summary: "Healthcheck"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Healthcheck'
+  /card/validate:
+    put:
+      security:
+        - apiKeyAuth: [ ]
+      tags:
+        - "card_validation"
+      summary: "Validate card"
+      requestBody:
+        description: Optional description in *Markdown*
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CardValidationRequest'
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardValidationResponse'
+        "400":
+          description: "Bad request"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseMessage'
+        "406":
+          description: "Not acceptable"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardValidationResponse'
+        "500":
+          description: "Internal error"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseMessage'
+
+components:
+  securitySchemes:
+    apiKeyAuth:
+      type: apiKey
+      in: header
+      name: relations-authorization
+  schemas:
+    Healthcheck:
+      type: object
+      properties:
+        message:
+          type: string
+      example:
+        message: "OK"
+    BaseMessage:
+      type: object
+      properties:
+        message:
+          type: string
+    CardValidationRequest:
+      type: object
+      properties:
+        card_number:
+          type: string
+        expiration_month:
+          type: integer
+        expiration_year:
+          type: integer
+    CodeErrorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+    CardValidationResponse:
+      type: object
+      properties:
+        valid:
+          type: boolean
+        error:
+          $ref: '#/components/schemas/CodeErrorResponse'

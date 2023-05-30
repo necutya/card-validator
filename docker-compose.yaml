@@ -1,0 +1,29 @@
+version: "3.9"
+
+services:
+  dev:
+    image: card-validator-dev
+    container_name: card-validator-dev
+    build:
+      context: .
+      target: dev
+    env_file:
+      - .env
+    volumes:
+      - "./:/app"
+    ports:
+      - "2345:2345"
+      - "8080:8080"
+
+  run:
+    image: card-validator-run
+    container_name: card-validator-run
+    build:
+      context: .
+      target: run
+    env_file:
+      - .env
+    volumes:
+      - "./:/app"
+    ports:
+      - "8080:8080"
